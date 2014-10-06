@@ -12,6 +12,7 @@ class NewsSitemap {
 
 	public function __construct($config) {
 		$this->config = $config;
+		dd($config);
 	}
 
 
@@ -40,6 +41,10 @@ class NewsSitemap {
 
 	public function render() {
 		dd($this->entries);
+	}
+
+	public function isCached() {
+		return false;
 	}
 
 }
