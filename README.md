@@ -8,7 +8,7 @@ A Google News sitemap generator for Laravel 4.
 
 Add the package to your `composer.json` file:
 
-```json
+```
 'cviebrock/laravel-news-sitemap' => 'dev-master'
 ```
 

@@ -1,5 +1,4 @@
-<?php
-namespace Cviebrock\LaravelNewsSitemap;
+<?php namespace Cviebrock\LaravelNewsSitemap;
 
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
@@ -12,7 +11,6 @@ class NewsSitemap {
 
 	public function __construct($config) {
 		$this->config = $config;
-		dd($config);
 	}
 
 
