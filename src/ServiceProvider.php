@@ -32,7 +32,6 @@ class ServiceProvider extends BaseServiceProvider {
         $this->app->bind('laravel-news-sitemap', function($app)
         {
 	        $config = $app['config']->get('laravel-news-sitemap::config');
-	        dd($app['config']);
 
 	        return new NewsSitemap($config);
         });

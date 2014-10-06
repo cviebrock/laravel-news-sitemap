@@ -3,27 +3,36 @@
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
 
+
 class NewsSitemap {
 
 	protected $config;
 
 	protected $entries = [];
 
+
 	public function __construct($config) {
 		$this->config = $config;
 	}
 
 
-	public function addEntry($location, $title, $date, $extras = []) {
+	public function addEntry($location, $title, $date, $extras = [], $images = []) {
 
-		$news = array_merge( $this->config['defaults'], $extras );
-		$news['publication'] = array_merge( $this->config['defaults']['publication'], Arr::get('publication', $extras, []) );
+		$news = array_merge(
+			Arr::get($this->config, 'defaults', []),
+			$extras
+		);
+
+		$news['publication'] = array_merge(
+			Arr::get($this->config, 'defaults.publication', []),
+			Arr::get($extras, 'publication', [])
+		);
 
 		$news['title'] = $title;
 
-		if ( is_int($date) ) {
-			$date = Carbon::createFromTimeStamp( $date );
-		} else if ( !($date instanceof Carbon) ) {
+		if (is_int($date)) {
+			$date = Carbon::createFromTimeStamp($date);
+		} else if (!($date instanceof Carbon)) {
 			$date = Carbon::parse($date);
 		}
 
@@ -31,9 +40,9 @@ class NewsSitemap {
 
 		$this->entries[] = [
 			'loc' => $location,
-			'news' => $news
+			'news' => $news,
+			'images' => $images,
 		];
-
 	}
 
 
@@ -41,8 +50,8 @@ class NewsSitemap {
 		dd($this->entries);
 	}
 
+
 	public function isCached() {
 		return false;
 	}
-
 }
