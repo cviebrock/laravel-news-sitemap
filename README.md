@@ -37,7 +37,7 @@ php artisan config:publish cviebrock/laravel-news-sitemap
 
 ```php
 // create a new sitemap instance
-$sitemap = \App::make('news-sitemap');
+$sitemap = \App::make('Cviebrock\LaravelNewsSitemap\NewsSitemap');
 
 // if it's not cached, then populate with entries
 if (!$sitemap->isCached()) {
