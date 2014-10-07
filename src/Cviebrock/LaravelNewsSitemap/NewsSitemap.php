@@ -2,7 +2,8 @@
 
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
-
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\View;
 
 class NewsSitemap {
 
@@ -47,9 +48,24 @@ class NewsSitemap {
 
 
 	public function render() {
-		dd($this->entries);
+		$data = $this->buildXML();
+		$headers = array('Content-type' => 'text/xml; charset=utf-8');
+
+		return Response::make($data, 200, $headers);
 	}
 
+
+	protected function buildXML() {
+
+		return View::make('news-sitemap::xml')
+			->with('entries', $this->entries);
+
+//		$xmlstr = file_get_contents(__DIR__ . '/../../stubs/news-sitemap.xml');
+//		$map = new \SimpleXMLElement($xmlstr, LIBXML_NOBLANKS | LIBXML_COMPACT);
+//
+//
+//		return $map->asXML();
+	}
 
 	public function isCached() {
 		return false;
