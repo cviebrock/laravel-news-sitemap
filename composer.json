@@ -23,8 +23,8 @@
 		"phpunit/phpunit": "3.7.*"
 	},
 	"autoload": {
-		"psr-4": {
-			"Cviebrock\\LaravelNewsSitemap\\": "src/"
+		"psr-0": {
+			"Cviebrock\\LaravelNewsSitemap": "src/"
 		}
 	},
 	"minimum-stability": "stable"
