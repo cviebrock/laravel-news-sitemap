@@ -1,9 +1,12 @@
 <?php
 
 return [
-	'use_cache' => false,
-	'cache_key' => 'newssitemap',
-	'cache_duration' => 3600,
+
+	'cache' => [
+		'enable' => false,
+		'key' => 'LaravelNewsSitemap',
+		'lifetime' => 60, // minutes
+	],
 
 	'defaults' => [
 		'publication' => [

@@ -2,8 +2,10 @@
 
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Facades\View;
+use Cache;
+use Response;
+use View;
+
 
 class NewsSitemap {
 
@@ -48,8 +50,15 @@ class NewsSitemap {
 
 
 	public function render() {
-		$data = $this->buildXML();
-		$headers = array('Content-type' => 'text/xml; charset=utf-8');
+		if ($this->useCache()) {
+			$data = Cache::remember($this->cacheKey(), $this->cacheLifetime(), function () {
+				return $this->buildXML();
+			});
+		} else {
+			$data = $this->buildXML();
+		}
+
+		$headers = ['Content-type' => 'text/xml; charset=utf-8'];
 
 		return Response::make($data, 200, $headers);
 	}
@@ -58,16 +67,23 @@ class NewsSitemap {
 	protected function buildXML() {
 
 		return View::make('news-sitemap::xml')
-			->with('entries', $this->entries);
-
-//		$xmlstr = file_get_contents(__DIR__ . '/../../stubs/news-sitemap.xml');
-//		$map = new \SimpleXMLElement($xmlstr, LIBXML_NOBLANKS | LIBXML_COMPACT);
-//
-//
-//		return $map->asXML();
+			->with('entries', $this->entries)
+			->render();
 	}
 
 	public function isCached() {
-		return false;
+		return $this->useCache() && Cache::has($this->cacheKey());
+	}
+
+	protected function useCache() {
+		return Arr::get($this->config, 'cache.enable');
+	}
+
+	protected function cacheKey() {
+		return Arr::get($this->config, 'cache.key');
+	}
+
+	protected function cacheLifetime() {
+		return Arr::get($this->config, 'cache.lifetime');
 	}
 }
