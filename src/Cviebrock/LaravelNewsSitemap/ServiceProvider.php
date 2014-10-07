@@ -28,7 +28,7 @@ class ServiceProvider extends BaseServiceProvider {
 	 */
 	public function register() {
 
-		$this->app->bind('news-sitemap', function ($app) {
+		$this->app->bind('Cviebrock\LaravelNewsSitemap\NewsSitemap', function ($app) {
 
 			$sitemap = new NewsSitemap(
 				$app['cache'],

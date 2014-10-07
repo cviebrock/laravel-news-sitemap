@@ -2,6 +2,9 @@
 
 class NewsSitemapTest extends Orchestra\Testbench\TestCase {
 
+	/**
+	 * @var \Cviebrock\LaravelNewsSitemap\NewsSitemap
+	 */
 	protected $sitemap;
 
 	protected function getPackageProviders() {
@@ -13,31 +16,20 @@ class NewsSitemapTest extends Orchestra\Testbench\TestCase {
 	public function setUp() {
 		parent::setUp();
 
-		// config
-		$config = [
-			'cache' => [
-				'enable' => false,
-				'key' => 'LaravelNewsSitemap',
-				'lifetime' => 60, // minutes
+		$this->sitemap = $this->app->make('Cviebrock\LaravelNewsSitemap\NewsSitemap');
+
+		$defaults = [
+			'publication' => [
+				'name' => 'Test News Site',
+				'language' => 'en'
 			],
-			'defaults' => [
-				'publication' => [
-					'name' => 'Test News Site',
-					'language' => 'en'
-				],
-				'access' => null,
-				'genres' => null,
-				'keywords' => [],
-				'stock_tickers' => []
-			]
+			'access' => null,
+			'genres' => null,
+			'keywords' => [],
+			'stock_tickers' => []
 		];
 
-		$this->sitemap = new Cviebrock\LaravelNewsSitemap\NewsSitemap(
-			$config,
-			$this->app->make('cache'),
-			new Illuminate\Support\Facades\Response(),
-			$this->app->make('view')
-		);
+		$this->sitemap->setDefaults($defaults);
 	}
 
 	public function testAddEntry() {
@@ -82,8 +74,7 @@ class NewsSitemapTest extends Orchestra\Testbench\TestCase {
 	}
 
 	public function testSitemapRender() {
-		$data = $this->sitemap->render();
-
-		dd($data);
+		// TODO: finish this test
+		// $data = $this->sitemap->render()
 	}
 }

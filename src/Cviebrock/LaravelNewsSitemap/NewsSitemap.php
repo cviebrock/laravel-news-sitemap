@@ -2,7 +2,7 @@
 
 use Carbon\Carbon;
 use Illuminate\Cache\CacheManager as Cache;
-use Illuminate\Support\Facades\Response;
+use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
 use Illuminate\View\Factory as View;
 
@@ -50,7 +50,6 @@ class NewsSitemap {
 	private $view;
 
 	/**
-	 * @param Arr $arr
 	 * @param Cache $cache
 	 * @param View $view
 	 */
@@ -166,7 +165,7 @@ class NewsSitemap {
 
 		$headers = ['Content-type' => 'text/xml; charset=utf-8'];
 
-		return Response::make($data, 200, $headers);
+		return new Response($data, 200, $headers);
 	}
 
 	/**
