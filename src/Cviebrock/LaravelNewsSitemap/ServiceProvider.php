@@ -18,7 +18,7 @@ class ServiceProvider extends BaseServiceProvider {
 	 * @return void
 	 */
 	public function boot() {
-		$this->package('cviebrock/laravel-news-sitemap', null, __DIR__.'/..');
+		$this->package('cviebrock/laravel-news-sitemap', 'news-sitemap');
 	}
 
 	/**
@@ -28,9 +28,9 @@ class ServiceProvider extends BaseServiceProvider {
 	 */
 	public function register() {
 
-		$this->app->bind('laravel-news-sitemap', function ($app) {
-			$config = $app['config']->get('laravel-news-sitemap::config');
-dd($config);
+		$this->app->bind('news-sitemap', function ($app) {
+			$config = $app['config']->get('news-sitemap::config');
+
 			return new NewsSitemap($config);
 		});
 	}
