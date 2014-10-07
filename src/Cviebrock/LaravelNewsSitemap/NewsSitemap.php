@@ -29,8 +29,8 @@ class NewsSitemap {
 	private $view;
 
 
-	public function __construct($config, Cache $cache, Response $response, View $view) {
-		$this->config = $config;
+	public function __construct(Cache $cache, Response $response, View $view) {
+		$this->config = \Config::get('news-sitemap::config');
 		$this->cache = $cache;
 		$this->response = $response;
 		$this->view = $view;

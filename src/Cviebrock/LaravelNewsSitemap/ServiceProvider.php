@@ -29,9 +29,9 @@ class ServiceProvider extends BaseServiceProvider {
 	public function register() {
 
 		$this->app->bind('news-sitemap', function ($app) {
-			$config = $app['config']->get('news-sitemap::config');
+//			$config = $app['config']->get('news-sitemap::config');
 
-			return new NewsSitemap($config);
+			return new NewsSitemap();
 		});
 	}
 
