@@ -29,9 +29,18 @@ class ServiceProvider extends BaseServiceProvider {
 	public function register() {
 
 		$this->app->bind('news-sitemap', function ($app) {
-//			$config = $app['config']->get('news-sitemap::config');
 
-			return new NewsSitemap();
+			$sitemap = new NewsSitemap(
+				$app['cache'],
+				$app['view']
+			);
+
+			$sitemap->setUseCache($app['config']->get('news-sitemap::cache.enable'));
+			$sitemap->setCacheKey($app['config']->get('news-sitemap::cache.key'));
+			$sitemap->setCacheLifetime($app['config']->get('news-sitemap::cache.lifetime'));
+			$sitemap->setDefaults($app['config']->get('news-sitemap::defaults'));
+
+			return $sitemap;
 		});
 	}
 

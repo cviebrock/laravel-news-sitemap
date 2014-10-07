@@ -1,17 +1,43 @@
 <?php namespace Cviebrock\LaravelNewsSitemap;
 
 use Carbon\Carbon;
-use Illuminate\Support\Arr;
 use Illuminate\Cache\CacheManager as Cache;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Arr;
 use Illuminate\View\Factory as View;
 
 
+/**
+ * Class NewsSitemap
+ *
+ * @package Cviebrock\LaravelNewsSitemap
+ */
 class NewsSitemap {
 
-	protected $config;
-
+	/**
+	 * @var array
+	 */
 	protected $entries = [];
+
+	/**
+	 * @var
+	 */
+	protected $useCache = false;
+
+	/**
+	 * @var
+	 */
+	protected $cacheKey = 'LaravelNewsSitemap';
+
+	/**
+	 * @var
+	 */
+	protected $cacheLifetime = 10;
+
+	/**
+	 * @var
+	 */
+	protected $defaults = [];
 
 	/**
 	 * @var Cache
@@ -19,33 +45,92 @@ class NewsSitemap {
 	private $cache;
 
 	/**
-	 * @var Response
-	 */
-	private $response;
-
-	/**
 	 * @var View
 	 */
 	private $view;
 
-
-	public function __construct(Cache $cache, Response $response, View $view) {
-		$this->config = \Config::get('news-sitemap::config');
+	/**
+	 * @param Arr $arr
+	 * @param Cache $cache
+	 * @param View $view
+	 */
+	public function __construct(Cache $cache, View $view) {
 		$this->cache = $cache;
-		$this->response = $response;
 		$this->view = $view;
 	}
 
+	/**
+	 * @return mixed
+	 */
+	public function getCacheKey() {
+		return $this->cacheKey;
+	}
 
+	/**
+	 * @param mixed $cacheKey
+	 */
+	public function setCacheKey($cacheKey) {
+		$this->cacheKey = $cacheKey;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getCacheLifetime() {
+		return $this->cacheLifetime;
+	}
+
+	/**
+	 * @param mixed $cacheLifetime
+	 */
+	public function setCacheLifetime($cacheLifetime) {
+		$this->cacheLifetime = $cacheLifetime;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getDefaults() {
+		return $this->defaultValues;
+	}
+
+	/**
+	 * @param mixed $defaultValues
+	 */
+	public function setDefaults($defaultValues) {
+		$this->defaultValues = $defaultValues;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getUseCache() {
+		return $this->useCache;
+	}
+
+	/**
+	 * @param mixed $useCache
+	 */
+	public function setUseCache($useCache) {
+		$this->useCache = $useCache;
+	}
+
+	/**
+	 * @param $location
+	 * @param $title
+	 * @param $date
+	 * @param array $extras
+	 * @param array $images
+	 */
 	public function addEntry($location, $title, $date, $extras = [], $images = []) {
 
 		$news = array_merge(
-			Arr::get($this->config, 'defaults', []),
+			$this->getDefaults(),
 			$extras
 		);
 
 		$news['publication'] = array_merge(
-			Arr::get($this->config, 'defaults.publication', []),
+			Arr::get($this->getDefaults(), 'publication', []),
 			Arr::get($extras, 'publication', [])
 		);
 
@@ -67,9 +152,12 @@ class NewsSitemap {
 	}
 
 
+	/**
+	 * @return \Illuminate\Http\Response
+	 */
 	public function render() {
-		if ($this->useCache()) {
-			$data = $this->cache->remember($this->cacheKey(), $this->cacheLifetime(), function () {
+		if ($this->getUseCache()) {
+			$data = $this->cache->remember($this->getCacheKey(), $this->getCacheLifetime(), function () {
 				return $this->buildXML();
 			});
 		} else {
@@ -81,31 +169,27 @@ class NewsSitemap {
 		return Response::make($data, 200, $headers);
 	}
 
+	/**
+	 * @return bool
+	 */
+	public function isCached() {
+		return $this->getUseCache() && $this->cache->has($this->getCacheKey());
+	}
 
+	/**
+	 * @return array
+	 */
+	public function getEntries() {
+		return $this->entries;
+	}
+
+	/**
+	 * @return string
+	 */
 	protected function buildXML() {
 
 		return $this->view->make('news-sitemap::xml')
 			->with('entries', $this->entries)
 			->render();
-	}
-
-	public function isCached() {
-		return $this->useCache() && Cache::has($this->cacheKey());
-	}
-
-	public function getEntries() {
-		return $this->entries;
-	}
-
-	protected function useCache() {
-		return Arr::get($this->config, 'cache.enable');
-	}
-
-	protected function cacheKey() {
-		return Arr::get($this->config, 'cache.key');
-	}
-
-	protected function cacheLifetime() {
-		return Arr::get($this->config, 'cache.lifetime');
 	}
 }
