@@ -2,9 +2,9 @@
 
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
-use Cache;
-use Response;
-use View;
+use Illuminate\Cache\CacheManager as Cache;
+use Illuminate\Support\Facades\Response;
+use Illuminate\View\Factory as View;
 
 
 class NewsSitemap {
@@ -13,9 +13,27 @@ class NewsSitemap {
 
 	protected $entries = [];
 
+	/**
+	 * @var Cache
+	 */
+	private $cache;
 
-	public function __construct($config) {
+	/**
+	 * @var Response
+	 */
+	private $response;
+
+	/**
+	 * @var View
+	 */
+	private $view;
+
+
+	public function __construct($config, Cache $cache, Response $response, View $view) {
 		$this->config = $config;
+		$this->cache = $cache;
+		$this->response = $response;
+		$this->view = $view;
 	}
 
 
@@ -51,7 +69,7 @@ class NewsSitemap {
 
 	public function render() {
 		if ($this->useCache()) {
-			$data = Cache::remember($this->cacheKey(), $this->cacheLifetime(), function () {
+			$data = $this->cache->remember($this->cacheKey(), $this->cacheLifetime(), function () {
 				return $this->buildXML();
 			});
 		} else {
@@ -66,7 +84,7 @@ class NewsSitemap {
 
 	protected function buildXML() {
 
-		return View::make('news-sitemap::xml')
+		return $this->view->make('news-sitemap::xml')
 			->with('entries', $this->entries)
 			->render();
 	}
