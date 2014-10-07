@@ -2,6 +2,7 @@
 
 A Google News sitemap generator for Laravel 4.
 
+[![Build Status](https://travis-ci.org/cviebrock/eloquent-sluggable.svg)](https://travis-ci.org/cviebrock/laravel-news-sitemap)
 [![Total Downloads](https://poser.pugx.org/cviebrock/laravel-news-sitemap/downloads.png)](https://packagist.org/packages/cviebrock/laravel-news-sitemap)
 [![Latest Stable Version](https://poser.pugx.org/cviebrock/laravel-news-sitemap/v/stable.png)](https://packagist.org/packages/cviebrock/laravel-news-sitemap)
 
