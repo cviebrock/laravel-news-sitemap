@@ -75,6 +75,10 @@ class NewsSitemap {
 		return $this->useCache() && Cache::has($this->cacheKey());
 	}
 
+	public function getEntries() {
+		return $this->entries;
+	}
+
 	protected function useCache() {
 		return Arr::get($this->config, 'cache.enable');
 	}

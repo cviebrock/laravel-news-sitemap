@@ -1,68 +1,78 @@
 <?php
 
-class NewsSitemapTest extends PHPUnit_Framework_TestCase
-{
-    protected $sitemap;
+class NewsSitemapTest extends PHPUnit_Framework_TestCase {
 
-    public function setUp()
-    {
-        parent::setUp();
+	protected $sitemap;
 
-        // config
-        $config = array(
-                        'use_cache' => false,
-                        'cache_key' => 'Laravel.Sitemap.',
-                        'cache_duration' => 3600,
-                    );
+	public function setUp() {
+		parent::setUp();
 
-        $this->sitemap = new Roumen\Sitemap\Sitemap($config);
-    }
+		// config
+		$config = [
+			'cache' = [
+				'enable' => true,
+				'key' => 'LaravelNewsSitemap',
+				'lifetime' => 60, // minutes
+			],
+			'defaults' => [
+				'publication' => [
+					'name' => 'Test News Site',
+					'language' => 'en'
+				],
+				'access' => null,
+				'genres' => null,
+				'keywords' => [],
+				'stock_tickers' => []
+			]
+		];
 
-    public function testSitemapAdd()
-    {
-    	$this->sitemap->add('TestLoc','2014-02-29 00:00:00', 0.95, 'weekly', array("test.png","test2.jpg"), 'TestTitle');
+		$this->sitemap = new Cviebrock\LaravelNewsSitemap\NewsSitemap($config);
+	}
 
-        $items = $this->sitemap->model->getItems();
+	public function testAddEntry() {
 
-        $this->assertCount(1, $items);
+		$extras = [
+			'keywords' => [
+				'foo',
+				'bar'
+			]
+		];
 
-        $this->assertEquals('TestLoc', $items[0]['loc']);
-        $this->assertEquals('2014-02-29 00:00:00', $items[0]['lastmod']);
-        $this->assertEquals('0.95', $items[0]['priority']);
-        $this->assertEquals('weekly', $items[0]['freq']);
-        $this->assertEquals(array('test.png','test2.jpg'), $items[0]['image']);
-        $this->assertEquals('TestTitle', $items[0]['title']);
+		$images = [
+			['loc' => 'http://example.com/1.jpg'],
+			['loc' => 'http://example.com/2.jpg'],
+		];
 
-    }
+		$this->sitemap->addEntry('http://example.com/', 'Example News Article', '2014-09-26', $extras, $images);
 
-    public function testSitemapAttributes()
-    {
-        $this->sitemap->model->setLink('TestLink');
-        $this->sitemap->model->setTitle('TestTitle');
-        $this->sitemap->model->setUseCache(true);
-        $this->sitemap->model->setCacheKey('lv-sitemap');
-        $this->sitemap->model->setCacheDuration(72000);
+		$items = $this->sitemap->getEntries();
 
-        $this->assertEquals('TestLink', $this->sitemap->model->getLink());
-        $this->assertEquals('TestTitle', $this->sitemap->model->getTitle());
-        $this->assertEquals(true, $this->sitemap->model->getUseCache());
-        $this->assertEquals('lv-sitemap', $this->sitemap->model->getCacheKey());
-        $this->assertEquals(72000, $this->sitemap->model->getCacheDuration());
-    }
+		$this->assertCount(1, $items);
 
-    public function testSitemapRender()
-    {
-    	//
-    }
+		$item = $items[0];
 
-    public function testSitemapStore()
-    {
-        //
-    }
+		$this->assertEquals('http://example.com', $item['loc']);
 
-    public function testSitemapCache()
-    {
-        //
-    }
+		$news = $item['news'];
+		$this->assertEquals('2014-09-26', $news['publication_date']);
+		$this->assertEquals('Example News Article', $news['title']);
+
+		$publication = $news['publication'];
+		$this->assertEquals('Test News Site', $publication['name']);
+		$this->assertEquals('en', $publication['language']);
+
+		$this->assertCount(2, $news['keywords']);
+		$this->assertEquals($extras['keywords'], $news['keywords']);
+
+		$images = $item['images'];
+		$this->assertCount(2, $images);
+		$this->assertEquals('http://example.com/1.jpg', $images[0]['loc']);
+		$this->assertEquals('http://example.com/2.jpg', $images[1]['loc']);
+
+	}
+
+	public function testSitemapRender() {
+		//
+	}
 
 }

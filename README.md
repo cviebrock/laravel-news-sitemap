@@ -2,6 +2,9 @@
 
 A Google News sitemap generator for Laravel 4.
 
+[![Total Downloads](https://poser.pugx.org/cviebrock/laravel-news-sitemap/downloads.png)](https://packagist.org/packages/cviebrock/laravel-news-sitemap)
+[![Latest Stable Version](https://poser.pugx.org/cviebrock/laravel-news-sitemap/v/stable.png)](https://packagist.org/packages/cviebrock/laravel-news-sitemap)
+
 
 
 ## Installation
@@ -26,6 +29,7 @@ Publish the configuration file:
 ```sh
 php artisan config:publish cviebrock/laravel-news-sitemap
 ```
+
 
 
 ## Sample Usage
@@ -59,3 +63,22 @@ if (!$sitemap->isCached()) {
 // returns an XML response
 return $sitemap->render();
 ```
+
+
+
+## Bugs, Suggestions and Contributions
+
+Please use Github for bugs, comments, suggestions.
+
+1. Fork the project.
+2. Create your bugfix/feature branch and write your (well-commented) code.
+3. Commit your changes and push to your repository.
+4. Create a new pull request against this project's `master` branch.
+
+
+
+## Copyright and License
+
+**laravel-news-sitemap** was written by Colin Viebrock and released under the MIT License. See the LICENSE file for details.
+
+Copyright 2014 Colin Viebrock
